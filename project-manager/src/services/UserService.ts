@@ -1,24 +1,33 @@
 import { User } from '../models/User'
+import { v4 as uuidv4 } from 'uuid'
 
 class UserService {
-	private static readonly STORAGE_KEY = 'loggedInUser'
+	private static USERS_KEY = 'users'
+	private static STORAGE_KEY = 'loggedInUser'
 
 	static getLoggedInUser(): User | null {
-		const user = localStorage.getItem(this.STORAGE_KEY)
-		return user ? JSON.parse(user) : null
+		const users = localStorage.getItem(this.STORAGE_KEY)
+		return users ? JSON.parse(users) : null
 	}
 
-	static setLoggedInUser(user: User): void {
-		localStorage.setItem(this.STORAGE_KEY, JSON.stringify(user))
+	static getAllUsers(): User[] {
+		const users = localStorage.getItem(this.USERS_KEY)
+		return users ? JSON.parse(users) : []
 	}
 
-	static mockLoggedInUser(): void {
-		const mockUser: User = {
-			id: '1',
-			firstName: 'Jan',
-			lastName: 'Kowalksi',
-		}
-		this.setLoggedInUser(mockUser)
+	static mockUsers(): void {
+		const users: User[] = [
+			{
+				id: uuidv4(),
+				firstName: 'Jan',
+				lastName: 'Adminowski',
+				role: 'admin',
+			},
+			{ id: uuidv4(), firstName: 'Jan', lastName: 'Developowski', role: 'devops' },
+			{ id: uuidv4(), firstName: 'Jan', lastName: 'Developer', role: 'developer' },
+		]
+		localStorage.setItem(this.USERS_KEY, JSON.stringify(users))
+		localStorage.setItem(this.STORAGE_KEY, JSON.stringify(users[0]))
 	}
 }
 
