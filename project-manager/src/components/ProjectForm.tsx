@@ -32,6 +32,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, onSave }) => {
 					type='text'
 					id='name'
 					value={name}
+					required
 					onChange={(e) => setName(e.target.value)}
 					style={{ width: '100%', padding: '5px' }}
 				/>
@@ -42,6 +43,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, onSave }) => {
 					type='text'
 					id='description'
 					value={description}
+					required
 					onChange={(e) => setDescription(e.target.value)}
 					style={{ width: '100%', padding: '5px' }}
 				/>
