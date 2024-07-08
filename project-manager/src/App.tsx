@@ -15,7 +15,7 @@ import { Task } from './models/Task'
 import TaskList from './components/TaskList'
 import TaskForm from './components/TaskForm'
 import TaskTable from './components/TaskTable'
-import LoginForm from './components/LoginForm' // Dodany komponent LoginForm
+import LoginForm from './components/LoginForm'
 import { User } from './models/User'
 
 const App: React.FC = () => {
@@ -25,7 +25,7 @@ const App: React.FC = () => {
 	const [currentStory, setCurrentStory] = useState<Story | undefined>(undefined)
 	const [tasks, setTasks] = useState<Task[]>([])
 	const [currentTask, setCurrentTask] = useState<Task | undefined>(undefined)
-	const [loggedInUser, setLoggedInUser] = useState<User | null>(UserService.getLoggedInUser()) // Dodany stan zalogowanego użytkownika
+	const [loggedInUser, setLoggedInUser] = useState<User | null>(UserService.getLoggedInUser())
 
 	useEffect(() => {
 		UserService.mockUsers()
@@ -140,7 +140,7 @@ const App: React.FC = () => {
 	return (
 		<div>
 			<h1>Project Manager</h1>
-			{loggedInUser ? ( // Warunek sprawdzający, czy użytkownik jest zalogowany
+			{loggedInUser ? (
 				<div>
 					<button onClick={handleLogout}>Logout</button>
 					<ProjectForm project={currentProject} onSave={handleSaveProject} />
