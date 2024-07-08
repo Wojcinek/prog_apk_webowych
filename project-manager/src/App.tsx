@@ -5,16 +5,18 @@ import { Project } from './models/Project'
 import ProjectForm from './components/ProjectForm'
 import ProjectList from './components/ProjectList'
 import { Story } from './models/Story'
-import { Task } from './models/Task'
 import UserService from './services/UserService'
 import StoryService from './services/StoryService'
-import TaskService from './services/TaskService'
 import ActiveProjectService from './services/ActiveProjectService'
 import StoryForm from './components/StoryForm'
 import StoryList from './components/StoryList'
+import TaskService from './services/TaskService'
+import { Task } from './models/Task'
 import TaskList from './components/TaskList'
-import TaskTable from './components/TaskTable'
 import TaskForm from './components/TaskForm'
+import TaskTable from './components/TaskTable'
+import LoginForm from './components/LoginForm' // Dodany komponent LoginForm
+import { User } from './models/User'
 
 const App: React.FC = () => {
 	const [projects, setProjects] = useState<Project[]>([])
@@ -23,6 +25,7 @@ const App: React.FC = () => {
 	const [currentStory, setCurrentStory] = useState<Story | undefined>(undefined)
 	const [tasks, setTasks] = useState<Task[]>([])
 	const [currentTask, setCurrentTask] = useState<Task | undefined>(undefined)
+	const [loggedInUser, setLoggedInUser] = useState<User | null>(UserService.getLoggedInUser()) // Dodany stan zalogowanego użytkownika
 
 	useEffect(() => {
 		UserService.mockUsers()
@@ -54,16 +57,18 @@ const App: React.FC = () => {
 		ActiveProjectService.clearActiveProject()
 		setCurrentProject(undefined)
 		setStories([])
-		setTasks([])
 	}
 
 	const handleSelectProject = (project: Project) => {
 		ActiveProjectService.setActiveProject(project)
 		setCurrentProject(project)
 		setStories(StoryService.getAllStories().filter((story) => story.projectId === project.id))
-		setTasks([])
 	}
 
+	const handleSelectStory = (story: Story) => {
+		setCurrentStory(story)
+		setTasks(TaskService.getAllTasks().filter((task) => task.storyId === story.id))
+	}
 	const handleSaveStory = (story: Story) => {
 		if (story.id === '') {
 			StoryService.saveStory(story)
@@ -83,12 +88,6 @@ const App: React.FC = () => {
 		setStories(
 			StoryService.getAllStories().filter((story) => story.projectId === (currentProject ? currentProject.id : ''))
 		)
-		setTasks([])
-	}
-
-	const handleSelectStory = (story: Story) => {
-		setCurrentStory(story)
-		setTasks(TaskService.getAllTasks().filter((task) => task.storyId === story.id))
 	}
 
 	const handleSaveTask = (task: Task) => {
@@ -127,49 +126,67 @@ const App: React.FC = () => {
 		}
 	}
 
+	const handleLogin = (user: User) => {
+		setLoggedInUser(user)
+	}
+
+	const handleLogout = () => {
+		localStorage.removeItem('token')
+		localStorage.removeItem('refreshToken')
+		localStorage.removeItem('loggedInUser')
+		setLoggedInUser(null)
+	}
+
 	return (
 		<div>
 			<h1>Project Manager</h1>
-			<ProjectForm project={currentProject} onSave={handleSaveProject} />
-			<ProjectList
-				projects={projects}
-				onEdit={handleEditProject}
-				onDelete={handleDeleteProject}
-				onSelect={handleSelectProject}
-			/>
-			{currentProject && (
-				<>
-					<h2>Stories for {currentProject.name}</h2>
-					<StoryForm story={currentStory} onSave={handleSaveStory} projectId={currentProject.id} />
-					<StoryList
-						stories={stories}
-						onEdit={handleEditStory}
-						onDelete={handleDeleteStory}
-						onSelect={handleSelectStory}
+			{loggedInUser ? ( // Warunek sprawdzający, czy użytkownik jest zalogowany
+				<div>
+					<button onClick={handleLogout}>Logout</button>
+					<ProjectForm project={currentProject} onSave={handleSaveProject} />
+					<ProjectList
+						projects={projects}
+						onEdit={handleEditProject}
+						onDelete={handleDeleteProject}
+						onSelect={handleSelectProject}
 					/>
-				</>
-			)}
-			{currentStory && (
-				<>
-					<h2>Kanban Board for {currentStory.name}</h2>
-					<TaskTable
-						tasks={tasks}
-						onEdit={handleEditTask}
-						onDelete={handleDeleteTask}
-						onUpdate={handleUpdateTask}
-						onAssignUser={handleAssignUser}
-						storyId={currentStory.id}
-					/>
-					<h2>Tasks for {currentStory.name}</h2>
-					<TaskForm task={currentTask} onSave={handleSaveTask} storyId={currentStory.id} />
-					<TaskList
-						tasks={tasks}
-						onEdit={handleEditTask}
-						onDelete={handleDeleteTask}
-						onUpdate={handleUpdateTask}
-						storyId={currentStory.id}
-					/>
-				</>
+					{currentProject && (
+						<>
+							<h2>Stories for {currentProject.name}</h2>
+							<StoryForm story={currentStory} onSave={handleSaveStory} projectId={currentProject.id} />
+							<StoryList
+								stories={stories}
+								onEdit={handleEditStory}
+								onDelete={handleDeleteStory}
+								onSelect={handleSelectStory}
+							/>
+						</>
+					)}
+					{currentStory && (
+						<>
+							<h2>Kanban Board for {currentStory.name}</h2>
+							<TaskTable
+								tasks={tasks}
+								onEdit={handleEditTask}
+								onDelete={handleDeleteTask}
+								onUpdate={handleUpdateTask}
+								onAssignUser={handleAssignUser}
+								storyId={currentStory.id}
+							/>
+							<h2>Tasks for {currentStory.name}</h2>
+							<TaskForm task={currentTask} onSave={handleSaveTask} storyId={currentStory.id} />
+							<TaskList
+								tasks={tasks}
+								onEdit={handleEditTask}
+								onDelete={handleDeleteTask}
+								onUpdate={handleUpdateTask}
+								storyId={currentStory.id}
+							/>
+						</>
+					)}
+				</div>
+			) : (
+				<LoginForm onLogin={handleLogin} />
 			)}
 		</div>
 	)
