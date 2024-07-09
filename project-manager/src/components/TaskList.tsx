@@ -24,7 +24,6 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onUpdate, onDelete, storyId 
 
 	return (
 		<div>
-			<h2>Task List</h2>
 			{tasks.length === 0 ? (
 				<p>No tasks available.</p>
 			) : (

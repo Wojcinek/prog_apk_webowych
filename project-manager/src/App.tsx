@@ -27,6 +27,7 @@ const App: React.FC = () => {
 	const [currentTask, setCurrentTask] = useState<Task | undefined>(undefined)
 	const [loggedInUser, setLoggedInUser] = useState<User | null>(UserService.getLoggedInUser())
 	const [darkMode, setDarkMode] = useState(false)
+	const [isTaskTableVisible, setIsTaskTableVisible] = useState(true)
 
 	useEffect(() => {
 		UserService.mockUsers()
@@ -54,6 +55,10 @@ const App: React.FC = () => {
 		}
 		setProjects(ProjectService.getAllProjects())
 		setCurrentProject(undefined)
+		setCurrentStory(undefined)
+		setStories([])
+		setTasks([])
+		setIsTaskTableVisible(false)
 	}
 
 	const handleEditProject = (project: Project) => {
@@ -65,18 +70,25 @@ const App: React.FC = () => {
 		setProjects(ProjectService.getAllProjects())
 		ActiveProjectService.clearActiveProject()
 		setCurrentProject(undefined)
+		setCurrentStory(undefined)
 		setStories([])
+		setTasks([])
+		setIsTaskTableVisible(false)
 	}
 
 	const handleSelectProject = (project: Project) => {
 		ActiveProjectService.setActiveProject(project)
 		setCurrentProject(project)
 		setStories(StoryService.getAllStories().filter((story) => story.projectId === project.id))
+		setCurrentStory(undefined)
+		setTasks([])
+		setIsTaskTableVisible(false)
 	}
 
 	const handleSelectStory = (story: Story) => {
 		setCurrentStory(story)
 		setTasks(TaskService.getAllTasks().filter((task) => task.storyId === story.id))
+		setIsTaskTableVisible(true)
 	}
 
 	const handleSaveStory = (story: Story) => {
@@ -87,6 +99,8 @@ const App: React.FC = () => {
 		}
 		setStories(StoryService.getAllStories().filter((s) => s.projectId === (currentProject ? currentProject.id : '')))
 		setCurrentStory(undefined)
+		setTasks([])
+		setIsTaskTableVisible(false)
 	}
 
 	const handleEditStory = (story: Story) => {
@@ -98,6 +112,9 @@ const App: React.FC = () => {
 		setStories(
 			StoryService.getAllStories().filter((story) => story.projectId === (currentProject ? currentProject.id : ''))
 		)
+		setCurrentStory(undefined)
+		setTasks([])
+		setIsTaskTableVisible(false)
 	}
 
 	const handleSaveTask = (task: Task) => {
@@ -151,6 +168,13 @@ const App: React.FC = () => {
 		setDarkMode(!darkMode)
 	}
 
+	const toggleTaskTableVisibility = () => {
+		setIsTaskTableVisible(!isTaskTableVisible)
+		if (!isTaskTableVisible) {
+			setCurrentTask(undefined)
+		}
+	}
+
 	return (
 		<main>
 			<div>
@@ -159,7 +183,11 @@ const App: React.FC = () => {
 						<h1>
 							Welcome {loggedInUser.firstName} {loggedInUser.lastName}
 						</h1>
-						<button onClick={handleLogout}>Logout</button>
+						<button
+							className='float-right bg-neutral-900 dark:bg-white text-white dark:text-black font-semibold'
+							onClick={handleLogout}>
+							Logout
+						</button>
 						<ProjectForm project={currentProject} onSave={handleSaveProject} />
 						<ProjectList
 							projects={projects}
@@ -181,24 +209,26 @@ const App: React.FC = () => {
 						)}
 						{currentStory && (
 							<>
-								<h2>Kanban Board for {currentStory.name}</h2>
-								<TaskTable
-									tasks={tasks}
-									onEdit={handleEditTask}
-									onDelete={handleDeleteTask}
-									onUpdate={handleUpdateTask}
-									onAssignUser={handleAssignUser}
-									storyId={currentStory.id}
-								/>
-								<h2>Tasks for {currentStory.name}</h2>
-								<TaskForm task={currentTask} onSave={handleSaveTask} storyId={currentStory.id} />
-								<TaskList
-									tasks={tasks}
-									onEdit={handleEditTask}
-									onDelete={handleDeleteTask}
-									onUpdate={handleUpdateTask}
-									storyId={currentStory.id}
-								/>
+								{isTaskTableVisible && (
+									<>
+										<h2>Kanban Board for {currentStory.name}</h2>
+										<button
+											className='bg-neutral-900 dark:bg-white text-white dark:text-black font-semibold mb-2'
+											onClick={toggleTaskTableVisibility}>
+											Hide Task Table and Form
+										</button>
+										<TaskTable
+											tasks={tasks}
+											onEdit={handleEditTask}
+											onDelete={handleDeleteTask}
+											onUpdate={handleUpdateTask}
+											onAssignUser={handleAssignUser}
+											storyId={currentStory.id}
+										/>
+										<h2>Tasks for {currentStory.name}</h2>
+										<TaskForm task={currentTask} onSave={handleSaveTask} storyId={currentStory.id} />
+									</>
+								)}
 							</>
 						)}
 					</div>
@@ -206,8 +236,10 @@ const App: React.FC = () => {
 					<LoginForm onLogin={handleLogin} />
 				)}
 			</div>
-			<button className='absolute w-16 h-16 bottom-16 right-16 rounded-full ' onClick={toggleDarkMode}>
-				DRK
+			<button
+				className='absolute w-16 h-16 bottom-16 right-16 bg-neutral-900 dark:bg-white rounded-full text-white dark:text-black font-semibold'
+				onClick={toggleDarkMode}>
+				{darkMode ? '☀️' : '🌙'}
 			</button>
 		</main>
 	)

@@ -24,19 +24,32 @@ const StoryList: React.FC<StoryListProps> = ({ stories, onEdit, onDelete, onSele
 			{statuses.map((status) => (
 				<div key={status}>
 					<h3>{status.charAt(0).toUpperCase() + status.slice(1)}</h3>
-					<ul>
-						{filteredStories[status].map((story) => (
-							<li key={story.id}>
-								<h4>{story.name}</h4>
-								<p>{story.description}</p>
-								<p>Priority: {story.priority}</p>
-								<p>Owner ID: {story.ownerId}</p>
-								<button onClick={() => onEdit(story)}>Edit</button>
-								<button onClick={() => onDelete(story.id)}>Delete</button>
-								<button onClick={() => onSelect(story)}>Show Tasks</button>
-							</li>
-						))}
-					</ul>
+					<table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '10px' }}>
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Description</th>
+								<th>Priority</th>
+								<th>Owner ID</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							{filteredStories[status].map((story) => (
+								<tr key={story.id} style={{ borderBottom: '1px solid #ccc' }}>
+									<td>{story.name}</td>
+									<td>{story.description}</td>
+									<td>{story.priority}</td>
+									<td>{story.ownerId}</td>
+									<td>
+										<button onClick={() => onEdit(story)}>Edit</button>
+										<button onClick={() => onDelete(story.id)}>Delete</button>
+										<button onClick={() => onSelect(story)}>Show Tasks</button>
+									</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
 				</div>
 			))}
 		</div>
