@@ -25,30 +25,34 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, onSave }) => {
 	}, [project])
 
 	return (
-		<form onSubmit={handleSubmit} style={{ maxWidth: '600px', margin: 'auto' }}>
-			<div style={{ marginBottom: '10px' }}>
-				<label htmlFor='name'>Name</label>
+		<form onSubmit={handleSubmit} className='max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md dark:bg-gray-800'>
+			<div className='mb-4 dark:bg-gray-800 bg-white'>
+				<label htmlFor='name' className='block text-gray-700 dark:text-gray-300'>
+					Name
+				</label>
 				<input
 					type='text'
 					id='name'
 					value={name}
-					required
 					onChange={(e) => setName(e.target.value)}
-					style={{ width: '100%', padding: '5px' }}
+					required
+					className='mt-2 p-2 w-full border rounded-lg dark:bg-gray-700 dark:text-white'
 				/>
 			</div>
-			<div style={{ marginBottom: '10px' }}>
-				<label htmlFor='description'>Description</label>
+			<div className='mb-4 dark:bg-gray-800 bg-white'>
+				<label htmlFor='description' className='block text-gray-700 dark:text-gray-300'>
+					Description
+				</label>
 				<input
 					type='text'
 					id='description'
 					value={description}
-					required
 					onChange={(e) => setDescription(e.target.value)}
-					style={{ width: '100%', padding: '5px' }}
+					required
+					className='mt-2 p-2 w-full border rounded-lg dark:bg-gray-700 dark:text-white'
 				/>
 			</div>
-			<button type='submit' style={{ padding: '5px 10px' }}>
+			<button type='submit' className='w-full p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700'>
 				Save
 			</button>
 		</form>

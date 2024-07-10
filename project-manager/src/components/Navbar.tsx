@@ -1,10 +1,32 @@
 import React, { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 
 const Navbar = () => {
 	const [nav, setNav] = useState(false)
+	const navigate = useNavigate()
 
 	const handleNav = () => {
 		setNav(!nav)
+	}
+
+	const handleStoriesClick = () => {
+		const savedProject = localStorage.getItem('selectedProject')
+		if (savedProject) {
+			const project = JSON.parse(savedProject)
+			navigate(`/stories/${project.id}`)
+		} else {
+			navigate('/projects')
+		}
+	}
+
+	const handleTasksClick = () => {
+		const savedStory = localStorage.getItem('selectedStory')
+		if (savedStory) {
+			const story = JSON.parse(savedStory)
+			navigate(`/tasks/${story.id}`)
+		} else {
+			navigate('/projects')
+		}
 	}
 
 	return (
@@ -14,21 +36,16 @@ const Navbar = () => {
 					<div className='flex flex-1 items-center justify-center sm:items-stretch sm:justify-start'>
 						<div className='hidden sm:ml-6 sm:block'>
 							<div className='flex space-x-4'>
-								<a
-									href='/projects'
+								<Link
+									to='/projects'
 									className='rounded-md px-3 py-2 text-sm font-medium text-gray-800 dark:text-gray-300 hover:bg-gray-700 hover:text-white bg-gray-50 dark:bg-gray-900 border border-gray-500 dark:border-gray-50'>
 									Projects
-								</a>
-								<a
-									href='/stories'
+								</Link>
+								<button
+									onClick={handleStoriesClick}
 									className='rounded-md px-3 py-2 text-sm font-medium text-gray-800 dark:text-gray-300 hover:text-white bg-gray-50 dark:bg-gray-900 border border-gray-500 dark:border-gray-50'>
 									Stories
-								</a>
-								<a
-									href='/tasks'
-									className='rounded-md px-3 py-2 text-sm font-medium text-gray-800 dark:text-gray-300 hover:text-white bg-gray-50 dark:bg-gray-900 border border-gray-500 dark:border-gray-50'>
-									Tasks
-								</a>
+								</button>
 							</div>
 						</div>
 					</div>

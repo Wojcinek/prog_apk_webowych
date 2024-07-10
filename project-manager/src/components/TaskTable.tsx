@@ -11,36 +11,39 @@ interface TaskTableProps {
 	storyId: string
 }
 
-const TaskTable: React.FC<TaskTableProps> = ({ tasks, onEdit, onDelete, onUpdate, storyId }) => {
+const TaskTable: React.FC<TaskTableProps> = ({ tasks, onEdit, onDelete, onUpdate, onAssignUser, storyId }) => {
 	return (
-		<div style={{ display: 'flex' }}>
-			<div style={{ flex: 1 }}>
-				<h3>Todo</h3>
+		<div className='grid grid-cols-1 md:grid-cols-3 gap-4 p-4'>
+			<div>
+				<h3 className='text-lg font-bold text-gray-700 dark:text-gray-300 mb-2'>To Do</h3>
 				<TaskList
 					tasks={tasks.filter((task) => task.status === 'todo')}
 					onEdit={onEdit}
 					onDelete={onDelete}
 					onUpdate={onUpdate}
+					onAssignUser={onAssignUser}
 					storyId={storyId}
 				/>
 			</div>
-			<div style={{ flex: 1 }}>
-				<h3>Doing</h3>
+			<div>
+				<h3 className='text-lg font-bold text-gray-700 dark:text-gray-300 mb-2'>Doing</h3>
 				<TaskList
 					tasks={tasks.filter((task) => task.status === 'doing')}
 					onEdit={onEdit}
 					onDelete={onDelete}
 					onUpdate={onUpdate}
+					onAssignUser={onAssignUser}
 					storyId={storyId}
 				/>
 			</div>
-			<div style={{ flex: 1 }}>
-				<h3>Done</h3>
+			<div>
+				<h3 className='text-lg font-bold text-gray-700 dark:text-gray-300 mb-2'>Done</h3>
 				<TaskList
 					tasks={tasks.filter((task) => task.status === 'done')}
 					onEdit={onEdit}
 					onDelete={onDelete}
 					onUpdate={onUpdate}
+					onAssignUser={onAssignUser}
 					storyId={storyId}
 				/>
 			</div>
