@@ -8,6 +8,7 @@ import StoryList from './components/StoryList'
 import TaskTable from './components/TaskTable'
 import TaskForm from './components/TaskForm'
 import TaskList from './components/TaskList'
+import Navbar from './components/Navbar'
 import { User } from './models/User'
 import { Project } from './models/Project'
 import { Story } from './models/Story'
@@ -176,72 +177,75 @@ const App: React.FC = () => {
 	}
 
 	return (
-		<main>
-			<div>
-				{loggedInUser ? (
-					<div>
-						<h1>
-							Welcome {loggedInUser.firstName} {loggedInUser.lastName}
-						</h1>
-						<button
-							className='float-right bg-neutral-900 dark:bg-white text-white dark:text-black font-semibold'
-							onClick={handleLogout}>
-							Logout
-						</button>
-						<ProjectForm project={currentProject} onSave={handleSaveProject} />
-						<ProjectList
-							projects={projects}
-							onEdit={handleEditProject}
-							onDelete={handleDeleteProject}
-							onSelect={handleSelectProject}
-						/>
-						{currentProject && (
-							<>
-								<h2>Stories for {currentProject.name}</h2>
-								<StoryForm story={currentStory} onSave={handleSaveStory} projectId={currentProject.id} />
-								<StoryList
-									stories={stories}
-									onEdit={handleEditStory}
-									onDelete={handleDeleteStory}
-									onSelect={handleSelectStory}
-								/>
-							</>
-						)}
-						{currentStory && (
-							<>
-								{isTaskTableVisible && (
-									<>
-										<h2>Kanban Board for {currentStory.name}</h2>
-										<button
-											className='bg-neutral-900 dark:bg-white text-white dark:text-black font-semibold mb-2'
-											onClick={toggleTaskTableVisibility}>
-											Hide Task Table and Form
-										</button>
-										<TaskTable
-											tasks={tasks}
-											onEdit={handleEditTask}
-											onDelete={handleDeleteTask}
-											onUpdate={handleUpdateTask}
-											onAssignUser={handleAssignUser}
-											storyId={currentStory.id}
-										/>
-										<h2>Tasks for {currentStory.name}</h2>
-										<TaskForm task={currentTask} onSave={handleSaveTask} storyId={currentStory.id} />
-									</>
-								)}
-							</>
-						)}
-					</div>
-				) : (
-					<LoginForm onLogin={handleLogin} />
-				)}
-			</div>
-			<button
-				className='absolute w-16 h-16 bottom-16 right-16 bg-neutral-900 dark:bg-white rounded-full text-white dark:text-black font-semibold'
-				onClick={toggleDarkMode}>
-				{darkMode ? '☀️' : '🌙'}
-			</button>
-		</main>
+		<>
+			<Navbar />
+			<main>
+				<div>
+					{loggedInUser ? (
+						<div>
+							<h1>
+								Welcome {loggedInUser.firstName} {loggedInUser.lastName}
+							</h1>
+							<button
+								className='bg-neutral-900 dark:bg-white text-white dark:text-black font-semibold absolute top-0 right-0 m-2'
+								onClick={handleLogout}>
+								Logout
+							</button>
+							<ProjectForm project={currentProject} onSave={handleSaveProject} />
+							<ProjectList
+								projects={projects}
+								onEdit={handleEditProject}
+								onDelete={handleDeleteProject}
+								onSelect={handleSelectProject}
+							/>
+							{currentProject && (
+								<>
+									<h2>Stories for {currentProject.name}</h2>
+									<StoryForm story={currentStory} onSave={handleSaveStory} projectId={currentProject.id} />
+									<StoryList
+										stories={stories}
+										onEdit={handleEditStory}
+										onDelete={handleDeleteStory}
+										onSelect={handleSelectStory}
+									/>
+								</>
+							)}
+							{currentStory && (
+								<>
+									{isTaskTableVisible && (
+										<>
+											<h2>Kanban Board for {currentStory.name}</h2>
+											<button
+												className='bg-neutral-900 dark:bg-white text-white dark:text-black font-semibold mb-2'
+												onClick={toggleTaskTableVisibility}>
+												Hide Task Table and Form
+											</button>
+											<TaskTable
+												tasks={tasks}
+												onEdit={handleEditTask}
+												onDelete={handleDeleteTask}
+												onUpdate={handleUpdateTask}
+												onAssignUser={handleAssignUser}
+												storyId={currentStory.id}
+											/>
+											<h2>Tasks for {currentStory.name}</h2>
+											<TaskForm task={currentTask} onSave={handleSaveTask} storyId={currentStory.id} />
+										</>
+									)}
+								</>
+							)}
+						</div>
+					) : (
+						<LoginForm onLogin={handleLogin} />
+					)}
+				</div>
+				<button
+					className='absolute w-16 h-16 bottom-16 right-16 bg-neutral-900 dark:bg-white rounded-full text-white dark:text-black font-semibold border border-gray-200 dark:border-purple-400'
+					onClick={toggleDarkMode}>
+					{darkMode ? '☀️' : '🌙'}
+				</button>
+			</main>
+		</>
 	)
 }
 
