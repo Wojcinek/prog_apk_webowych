@@ -8,57 +8,44 @@ import StoryPage from './pages/StoryPage'
 import TaskPage from './pages/TaskPage'
 import { User } from './models/User'
 import UserService from './services/UserService'
+import { createClient, Session } from '@supabase/supabase-js'
+import { Auth } from '@supabase/auth-ui-react'
+import { ThemeSupa } from '@supabase/auth-ui-shared'
+import supabase from './lib/supabase'
 
 const App: React.FC = () => {
-	const [loggedInUser, setLoggedInUser] = useState<User | null>(UserService.getLoggedInUser())
-	const [darkMode, setDarkMode] = useState(false)
+	const [session, setSession] = useState<Session | null>(null)
 
 	useEffect(() => {
-		if (darkMode) {
-			document.documentElement.classList.add('dark')
-		} else {
-			document.documentElement.classList.remove('dark')
-		}
-	}, [darkMode])
+		supabase.auth.getSession().then(({ data: { session } }) => {
+			setSession(session)
+		})
 
-	const handleLogin = (user: User) => {
-		setLoggedInUser(user)
-	}
+		const {
+			data: { subscription },
+		} = supabase.auth.onAuthStateChange((_event, session) => {
+			setSession(session)
+		})
 
-	const handleLogout = () => {
-		UserService.logout()
-		setLoggedInUser(null)
-	}
+		return () => subscription.unsubscribe()
+	}, [])
 
-	const toggleDarkMode = () => {
-		setDarkMode(!darkMode)
+	if (!session) {
+		return <LoginForm />
 	}
 
 	return (
 		<Router>
 			<Navbar />
 			<main className='p-4'>
-				{loggedInUser ? (
-					<Routes>
-						<Route path='/projects' element={<ProjectPage />} />
-						<Route path='/stories/:projectId' element={<StoryPage />} />
-						<Route path='/tasks/:storyId' element={<TaskPage />} />
-					</Routes>
-				) : (
-					<LoginForm onLogin={handleLogin} />
-				)}
+				<Routes>
+					<Route path='/projects' element={<ProjectPage />} />
+					<Route path='/stories/:projectId' element={<StoryPage />} />
+					<Route path='/tasks/:storyId' element={<TaskPage />} />
+				</Routes>
 			</main>
-			{loggedInUser && (
-				<button
-					className='bg-neutral-900 dark:bg-white text-white dark:text-black font-semibold absolute top-0 right-0 m-2'
-					onClick={handleLogout}>
-					Logout
-				</button>
-			)}
-			<button
-				className='absolute top-0 left-0 m-2 bg-neutral-900 dark:bg-white rounded-full text-white dark:text-black font-semibold border border-gray-200 dark:border-purple-400'
-				onClick={toggleDarkMode}>
-				{darkMode ? '☀️' : '🌙'}
+			<button className='bg-neutral-900 dark:bg-white text-white dark:text-black font-semibold absolute top-0 right-0 m-2'>
+				Logout
 			</button>
 		</Router>
 	)
