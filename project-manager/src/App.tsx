@@ -12,9 +12,23 @@ import { createClient, Session } from '@supabase/supabase-js'
 import { Auth } from '@supabase/auth-ui-react'
 import { ThemeSupa } from '@supabase/auth-ui-shared'
 import supabase from './lib/supabase'
+import { sign } from 'jsonwebtoken'
 
 const App: React.FC = () => {
 	const [session, setSession] = useState<Session | null>(null)
+	const [darkMode, setDarkMode] = useState(false)
+
+	useEffect(() => {
+		if (darkMode) {
+			document.documentElement.classList.add('dark')
+		} else {
+			document.documentElement.classList.remove('dark')
+		}
+	}, [darkMode])
+
+	const toggleDarkMode = () => {
+		setDarkMode(!darkMode)
+	}
 
 	useEffect(() => {
 		supabase.auth.getSession().then(({ data: { session } }) => {
@@ -34,6 +48,10 @@ const App: React.FC = () => {
 		return <LoginForm />
 	}
 
+	async function signOut() {
+		const { error } = await supabase.auth.signOut()
+	}
+
 	return (
 		<Router>
 			<Navbar />
@@ -44,8 +62,15 @@ const App: React.FC = () => {
 					<Route path='/tasks/:storyId' element={<TaskPage />} />
 				</Routes>
 			</main>
-			<button className='bg-neutral-900 dark:bg-white text-white dark:text-black font-semibold absolute top-0 right-0 m-2'>
+			<button
+				className='bg-neutral-900 dark:bg-white text-white dark:text-black font-semibold absolute top-0 right-0 m-2'
+				onClick={signOut}>
 				Logout
+			</button>
+			<button
+				className='absolute top-0 left-0 m-2 bg-neutral-900 dark:bg-white rounded-full text-white dark:text-black font-semibold border border-gray-200 dark:border-purple-400'
+				onClick={toggleDarkMode}>
+				{darkMode ? '☀️' : '🌙'}
 			</button>
 		</Router>
 	)

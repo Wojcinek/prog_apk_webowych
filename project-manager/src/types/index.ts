@@ -57,7 +57,7 @@ export type Database = {
 						foreignKeyName: 'Story_ownerId_fkey'
 						columns: ['ownerId']
 						isOneToOne: false
-						referencedRelation: 'User'
+						referencedRelation: 'users'
 						referencedColumns: ['id']
 					},
 					{
@@ -72,7 +72,7 @@ export type Database = {
 			Task: {
 				Row: {
 					assignedUser: string | null
-					createdAt: string
+					createdAt: string | null
 					description: string
 					endDate: string | null
 					estimatedTime: number
@@ -85,7 +85,7 @@ export type Database = {
 				}
 				Insert: {
 					assignedUser?: string | null
-					createdAt: string
+					createdAt?: string | null
 					description: string
 					endDate?: string | null
 					estimatedTime: number
@@ -98,7 +98,7 @@ export type Database = {
 				}
 				Update: {
 					assignedUser?: string | null
-					createdAt?: string
+					createdAt?: string | null
 					description?: string
 					endDate?: string | null
 					estimatedTime?: number
@@ -114,7 +114,7 @@ export type Database = {
 						foreignKeyName: 'Task_assignedUser_fkey'
 						columns: ['assignedUser']
 						isOneToOne: false
-						referencedRelation: 'User'
+						referencedRelation: 'users'
 						referencedColumns: ['id']
 					},
 					{
