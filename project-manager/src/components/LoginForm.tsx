@@ -1,6 +1,4 @@
 import React, { useState } from 'react'
-import UserService from '../services/UserService'
-import { User } from '../models/User'
 import supabase from '../lib/supabase'
 
 const LoginForm: React.FC = ({}) => {

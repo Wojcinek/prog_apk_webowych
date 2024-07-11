@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Story } from '../models/Story'
-import UserService from '../services/UserService'
+import { v4 as uuidv4 } from 'uuid'
 
 interface StoryFormProps {
 	story?: Story
@@ -14,27 +14,6 @@ const StoryForm: React.FC<StoryFormProps> = ({ story, onSave, projectId }) => {
 	const [priority, setPriority] = useState<'low' | 'medium' | 'high'>(story ? story.priority : 'low')
 	const [status, setStatus] = useState<'todo' | 'doing' | 'done'>(story ? story.status : 'todo')
 
-	const handleSubmit = (e: React.FormEvent) => {
-		e.preventDefault()
-		const loggedInUser = UserService.getLoggedInUser()
-		if (loggedInUser) {
-			onSave({
-				id: story ? story.id : '',
-				name,
-				description,
-				priority,
-				projectId,
-				createdAt: story ? story.createdAt : '',
-				status,
-				ownerId: loggedInUser.id,
-			})
-		}
-		setName('')
-		setDescription('')
-		setPriority('low')
-		setStatus('todo')
-	}
-
 	useEffect(() => {
 		if (story) {
 			setName(story.name)
@@ -43,6 +22,41 @@ const StoryForm: React.FC<StoryFormProps> = ({ story, onSave, projectId }) => {
 			setStatus(story.status)
 		}
 	}, [story])
+
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault()
+		const createdAt = new Date().toISOString()
+		const ownerId = uuidv4()
+		const newStory: Story = { id: uuidv4(), name, description, priority, projectId, status, createdAt, ownerId }
+		try {
+			await onSave(newStory)
+			setName('')
+			setDescription('')
+			setPriority('low')
+			setStatus('todo')
+		} catch (error) {
+			console.error('Error adding story:', error)
+		}
+	}
+
+	// 	const loggedInUser = UserService.getLoggedInUser()
+	// 	if (loggedInUser) {
+	// 		onSave({
+	// 			id: story ? story.id : '',
+	// 			name,
+	// 			description,
+	// 			priority,
+	// 			projectId,
+	// 			createdAt: story ? story.createdAt : '',
+	// 			status,
+	// 			ownerId: loggedInUser.id,
+	// 		})
+	// 	}
+	// 	setName('')
+	// 	setDescription('')
+	// 	setPriority('low')
+	// 	setStatus('todo')
+	// }
 
 	return (
 		<form onSubmit={handleSubmit} className='max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md dark:bg-gray-800'>
@@ -100,7 +114,7 @@ const StoryForm: React.FC<StoryFormProps> = ({ story, onSave, projectId }) => {
 					<option value='done'>Done</option>
 				</select>
 			</div>
-			<button type='submit' className='w-full p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700'>
+			<button type='submit' className='w-full p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700 '>
 				Save
 			</button>
 		</form>

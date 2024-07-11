@@ -9,31 +9,27 @@ const TaskPage: React.FC = () => {
 	const { storyId } = useParams<{ storyId: string }>()
 	const [tasks, setTasks] = useState<Task[]>([])
 	const [currentTask, setCurrentTask] = useState<Task | undefined>(undefined)
-	const navigate = useNavigate()
 
 	useEffect(() => {
-		const savedStory = localStorage.getItem('selectedStory')
-		if (savedStory) {
-			const story = JSON.parse(savedStory)
-			if (story.id !== storyId) {
-				navigate('/projects')
+		const fetchTasks = async () => {
+			if (storyId) {
+				const tasks = await TaskService.getTaskByStoryId(storyId)
+				setTasks(tasks)
 			}
-		} else {
-			navigate('/projects')
 		}
+		fetchTasks()
+	}, [storyId])
 
-		if (storyId) {
-			setTasks(TaskService.getAllTasks().filter((task) => task.storyId === storyId))
-		}
-	}, [storyId, navigate])
-
-	const handleSaveTask = (task: Task) => {
+	const handleSaveTask = async (task: Task) => {
 		if (task.id === '') {
-			TaskService.saveTask(task)
+			await TaskService.saveTask(task)
 		} else {
-			TaskService.updateTask(task)
+			await TaskService.updateTask(task)
 		}
-		setTasks(TaskService.getAllTasks().filter((t) => t.storyId === storyId))
+		if (storyId) {
+			const tasks = await TaskService.getTaskByStoryId(storyId)
+			setTasks(tasks)
+		}
 		setCurrentTask(undefined)
 	}
 
@@ -41,19 +37,22 @@ const TaskPage: React.FC = () => {
 		setCurrentTask(task)
 	}
 
-	const handleDeleteTask = (id: string) => {
-		TaskService.deleteTask(id)
-		setTasks(TaskService.getAllTasks().filter((task) => task.storyId === storyId))
+	const handleDeleteTask = async (id: string) => {
+		await TaskService.deleteTask(id)
+		if (storyId) {
+			const stories = await TaskService.getTaskByStoryId(storyId)
+			setTasks(tasks)
+		}
 	}
 
 	const handleUpdateTask = (task: Task) => {
-		TaskService.updateTask(task)
-		setTasks(TaskService.getAllTasks().filter((t) => t.storyId === storyId))
+		// TaskService.updateTask(task)
+		// setTasks(TaskService.getAllTasks().filter((t) => t.storyId === storyId))
 	}
 
 	const handleAssignUser = (taskId: string, userId: string) => {
-		TaskService.assignUser(taskId, userId)
-		setTasks(TaskService.getAllTasks().filter((task) => task.storyId === storyId))
+		// TaskService.assignUser(taskId, userId)
+		// setTasks(TaskService.getAllTasks().filter((task) => task.storyId === storyId))
 	}
 
 	return (

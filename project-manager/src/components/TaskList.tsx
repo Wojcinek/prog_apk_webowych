@@ -37,15 +37,15 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onEdit, onDelete, onUpdate, 
 							<p className='text-gray-600 dark:text-gray-400'>Estimated Time: {task.estimatedTime} hours</p>
 							<p className='text-gray-600 dark:text-gray-400'>Status: {task.status}</p>
 							<p className='text-gray-600 dark:text-gray-400'>Assigned User: {task.assignedUser}</p>
-							<div className='flex justify-between mt-4'>
+							<div className='flex justify-between mt-4 bg-white dark:bg-gray-800'>
 								<button
 									onClick={() => handleEdit(task)}
-									className='px-3 py-1 bg-yellow-500 text-white rounded-lg hover:bg-yellow-700'>
+									className='px-3 py-1 bg-yellow-500 text-white rounded-lg hover:bg-yellow-700 w-32'>
 									Edit
 								</button>
 								<button
 									onClick={() => onDelete(task.id)}
-									className='px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-700'>
+									className='px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-700 w-32'>
 									Delete
 								</button>
 							</div>

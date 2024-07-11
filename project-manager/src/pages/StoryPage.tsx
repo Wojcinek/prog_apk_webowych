@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import StoryForm from '../components/StoryForm'
 import StoryList from '../components/StoryList'
 import { Story } from '../models/Story'
-import StoryService from '../services/StoryService'
+import StoryService, { addStory } from '../services/StoryService'
 
 const StoryPage: React.FC = () => {
 	const { projectId } = useParams<{ projectId: string }>()
@@ -12,38 +12,49 @@ const StoryPage: React.FC = () => {
 	const navigate = useNavigate()
 
 	useEffect(() => {
-		const savedProject = localStorage.getItem('selectedProject')
-		if (savedProject) {
-			const project = JSON.parse(savedProject)
-			if (project.id !== projectId) {
-				navigate('/projects')
+		const fetchStories = async () => {
+			if (projectId) {
+				const stories = await StoryService.getStoriesByProjectId(projectId)
+				setStories(stories)
 			}
-		} else {
-			navigate('/projects')
 		}
+		fetchStories()
+	}, [projectId])
 
-		if (projectId) {
-			setStories(StoryService.getAllStories().filter((story) => story.projectId === projectId))
-		}
-	}, [projectId, navigate])
-
-	const handleSaveStory = (story: Story) => {
+	const handleSaveStory = async (story: Story) => {
 		if (story.id === '') {
-			StoryService.saveStory(story)
+			await StoryService.saveStory(story)
 		} else {
-			StoryService.updateStory(story)
+			await StoryService.updateStory(story)
 		}
-		setStories(StoryService.getAllStories().filter((s) => s.projectId === projectId))
+		if (projectId) {
+			const stories = await StoryService.getStoriesByProjectId(projectId)
+			setStories(stories)
+		}
 		setCurrentStory(undefined)
+	}
+
+	const handleAddStory = async (newStory: Story) => {
+		if (projectId) {
+			const addedStory = await addStory(newStory)
+			const stories = await StoryService.getStoriesByProjectId(projectId)
+			setStories(stories)
+		}
+		{
+			console.error('Error adding story:')
+		}
 	}
 
 	const handleEditStory = (story: Story) => {
 		setCurrentStory(story)
 	}
 
-	const handleDeleteStory = (id: string) => {
-		StoryService.deleteStory(id)
-		setStories(StoryService.getAllStories().filter((story) => story.projectId === projectId))
+	const handleDeleteStory = async (id: string) => {
+		await StoryService.deleteStory(id)
+		if (projectId) {
+			const stories = await StoryService.getStoriesByProjectId(projectId)
+			setStories(stories)
+		}
 	}
 
 	const handleSelectStory = (story: Story) => {
@@ -54,7 +65,7 @@ const StoryPage: React.FC = () => {
 	return (
 		<div>
 			<h1 className='text-2xl font-bold text-gray-700 dark:text-gray-300 mb-4'>Stories</h1>
-			<StoryForm story={currentStory} onSave={handleSaveStory} projectId={projectId!} />
+			<StoryForm story={currentStory} onSave={handleAddStory} projectId={projectId!} />
 			<StoryList stories={stories} onEdit={handleEditStory} onDelete={handleDeleteStory} onSelect={handleSelectStory} />
 		</div>
 	)

@@ -5,17 +5,17 @@ export type Database = {
 		Tables: {
 			Project: {
 				Row: {
-					description: string
+					description: string | null
 					id: string
 					name: string
 				}
 				Insert: {
-					description: string
+					description?: string | null
 					id?: string
 					name: string
 				}
 				Update: {
-					description?: string
+					description?: string | null
 					id?: string
 					name?: string
 				}
@@ -26,7 +26,7 @@ export type Database = {
 					createdAt: string | null
 					description: string | null
 					id: string
-					name: string | null
+					name: string
 					ownerId: string | null
 					priority: Database['public']['Enums']['priority'] | null
 					projectId: string | null
@@ -36,7 +36,7 @@ export type Database = {
 					createdAt?: string | null
 					description?: string | null
 					id?: string
-					name?: string | null
+					name: string
 					ownerId?: string | null
 					priority?: Database['public']['Enums']['priority'] | null
 					projectId?: string | null
@@ -46,20 +46,13 @@ export type Database = {
 					createdAt?: string | null
 					description?: string | null
 					id?: string
-					name?: string | null
+					name?: string
 					ownerId?: string | null
 					priority?: Database['public']['Enums']['priority'] | null
 					projectId?: string | null
 					status?: Database['public']['Enums']['status'] | null
 				}
 				Relationships: [
-					{
-						foreignKeyName: 'Story_ownerId_fkey'
-						columns: ['ownerId']
-						isOneToOne: false
-						referencedRelation: 'users'
-						referencedColumns: ['id']
-					},
 					{
 						foreignKeyName: 'Story_projectId_fkey'
 						columns: ['projectId']

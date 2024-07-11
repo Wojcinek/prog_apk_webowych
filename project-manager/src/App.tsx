@@ -6,13 +6,8 @@ import Navbar from './components/Navbar'
 import ProjectPage from './pages/ProjectPage'
 import StoryPage from './pages/StoryPage'
 import TaskPage from './pages/TaskPage'
-import { User } from './models/User'
-import UserService from './services/UserService'
-import { createClient, Session } from '@supabase/supabase-js'
-import { Auth } from '@supabase/auth-ui-react'
-import { ThemeSupa } from '@supabase/auth-ui-shared'
+import { Session } from '@supabase/supabase-js'
 import supabase from './lib/supabase'
-import { sign } from 'jsonwebtoken'
 
 const App: React.FC = () => {
 	const [session, setSession] = useState<Session | null>(null)

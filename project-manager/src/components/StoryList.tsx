@@ -30,17 +30,17 @@ const StoryList: React.FC<StoryListProps> = ({ stories, onEdit, onDelete, onSele
 								<div className='flex justify-between mt-4 dark:bg-gray-800 bg-white'>
 									<button
 										onClick={() => onEdit(story)}
-										className='px-3 py-1 bg-yellow-500 text-white rounded-lg hover:bg-yellow-700'>
+										className='px-3 py-1 bg-yellow-500 text-white rounded-lg hover:bg-yellow-700 w-40'>
 										Edit
 									</button>
 									<button
 										onClick={() => onDelete(story.id)}
-										className='px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-700'>
+										className='px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-700 w-40'>
 										Delete
 									</button>
 									<button
 										onClick={() => onSelect(story)}
-										className='px-3 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-700'>
+										className='px-3 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-700 w-40'>
 										Show Tasks
 									</button>
 								</div>

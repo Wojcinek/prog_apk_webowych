@@ -1,46 +1,40 @@
 import { Task } from '../models/Task'
 import { v4 as uuidv4 } from 'uuid'
+import supabase from '../lib/supabase'
 
 class TaskService {
-	private static TASK_KEY = 'tasks'
-
-	static getAllTasks(): Task[] {
-		const tasks = localStorage.getItem(this.TASK_KEY)
-		return tasks ? JSON.parse(tasks) : []
+	static async getAllTasks(): Promise<Task[]> {
+		let { data, error } = await supabase.from('Task').select('*')
+		if (error) throw error
+		return data as Task[]
 	}
 
-	static saveTask(task: Task): void {
-		const tasks = this.getAllTasks()
-		task.id = uuidv4()
-		task.createdAt = new Date().toLocaleDateString()
-		tasks.push(task)
-		localStorage.setItem(this.TASK_KEY, JSON.stringify(tasks))
+	static async getTaskById(id: string): Promise<Task | null> {
+		let { data, error } = await supabase.from('Task').select('*').eq('id', id).single()
+		if (error) throw error
+		return data as Task
 	}
 
-	static updateTask(updatedTask: Task): void {
-		let tasks = this.getAllTasks()
-		tasks = tasks.map((task) => (task.id === updatedTask.id ? updatedTask : task))
-		localStorage.setItem(this.TASK_KEY, JSON.stringify(tasks))
+	static async getTaskByStoryId(storyId: string): Promise<Task[]> {
+		let { data, error } = await supabase.from('Task').select('*').eq('storyId', storyId)
+		if (error) throw error
+		return data as Task[]
 	}
 
-	static deleteTask(id: string): void {
-		const tasks = this.getAllTasks().filter((tasks) => tasks.id !== id)
-		localStorage.setItem(this.TASK_KEY, JSON.stringify(tasks))
+	static async saveTask(story: Task): Promise<void> {
+		story.id = uuidv4()
+		let { error } = await supabase.from('Story').insert([story])
+		if (error) throw error
 	}
 
-	static assignUser(taskId: string, userId: string): Task {
-		let tasks = this.getAllTasks()
-		const taskToUpdate = tasks.find((task) => task.id === taskId)
-		if (taskToUpdate) {
-			taskToUpdate.assignedUser = userId
-			if (taskToUpdate.status === 'todo') {
-				taskToUpdate.status = 'doing'
-			}
-			this.updateTask(taskToUpdate)
-			return taskToUpdate
-		} else {
-			throw new Error(`Task with ID ${taskId} not found.`)
-		}
+	static async updateTask(story: Task): Promise<void> {
+		let { error } = await supabase.from('Story').update(story).eq('id', story.id)
+		if (error) throw error
+	}
+
+	static async deleteTask(id: string): Promise<void> {
+		let { error } = await supabase.from('Story').delete().eq('id', id)
+		if (error) throw error
 	}
 }
 

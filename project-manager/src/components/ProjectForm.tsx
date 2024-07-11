@@ -1,28 +1,26 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Project } from '../models/Project'
+import { v4 as uuidv4 } from 'uuid'
 
 interface ProjectFormProps {
-	project?: Project
-	onSave: (project: Project) => void
+	onAddProject: (project: Project) => void
 }
 
-const ProjectForm: React.FC<ProjectFormProps> = ({ project, onSave }) => {
-	const [name, setName] = useState(project ? project.name : '')
-	const [description, setDescription] = useState(project ? project.description : '')
+const ProjectForm: React.FC<ProjectFormProps> = ({ onAddProject }) => {
+	const [name, setName] = useState('')
+	const [description, setDescription] = useState('')
 
-	const handleSubmit = (e: React.FormEvent) => {
+	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()
-		onSave({ id: project ? project.id : '', name, description })
-		setName('')
-		setDescription('')
-	}
-
-	useEffect(() => {
-		if (project) {
-			setName(project.name)
-			setDescription(project.description)
+		const newProject: Project = { id: uuidv4(), name, description }
+		try {
+			await onAddProject(newProject)
+			setName('')
+			setDescription('')
+		} catch (error) {
+			console.error('Error adding project:', error)
 		}
-	}, [project])
+	}
 
 	return (
 		<form onSubmit={handleSubmit} className='max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md dark:bg-gray-800'>

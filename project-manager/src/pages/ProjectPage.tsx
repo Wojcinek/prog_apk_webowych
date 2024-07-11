@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import ProjectForm from '../components/ProjectForm'
 import ProjectList from '../components/ProjectList'
 import { Project } from '../models/Project'
-import ProjectService from '../services/ProjectService'
+import ProjectService, { addProject } from '../services/ProjectService'
 import ActiveProjectService from '../services/ActiveProjectService'
 
 const ProjectPage: React.FC = () => {
@@ -12,38 +12,42 @@ const ProjectPage: React.FC = () => {
 	const navigate = useNavigate()
 
 	useEffect(() => {
-		setProjects(ProjectService.getAllProjects())
+		const fetchProjects = async () => {
+			const projects = await ProjectService.getAllProjects()
+			setProjects(projects)
+		}
+		fetchProjects()
 	}, [])
 
-	const handleSaveProject = (project: Project) => {
-		if (project.id === '') {
-			ProjectService.saveProject(project)
-		} else {
-			ProjectService.updateProject(project)
+	const handleAddProject = async (newProject: Project) => {
+		try {
+			const addedProject = await addProject(newProject)
+			const projects = await ProjectService.getAllProjects()
+			setProjects(projects)
+		} catch (error) {
+			console.error('Error adding project:', error)
 		}
-		setProjects(ProjectService.getAllProjects())
-		setCurrentProject(undefined)
 	}
 
 	const handleEditProject = (project: Project) => {
 		setCurrentProject(project)
 	}
 
-	const handleDeleteProject = (id: string) => {
-		ProjectService.deleteProject(id)
-		setProjects(ProjectService.getAllProjects())
+	const handleDeleteProject = async (id: string) => {
+		await ProjectService.deleteProject(id)
+		const projects = await ProjectService.getAllProjects()
+		setProjects(projects)
 	}
 
 	const handleSelectProject = (project: Project) => {
 		ActiveProjectService.setActiveProject(project)
-		localStorage.setItem('selectedProject', JSON.stringify(project))
 		navigate(`/stories/${project.id}`)
 	}
 
 	return (
 		<div>
 			<h1>Projects</h1>
-			<ProjectForm project={currentProject} onSave={handleSaveProject} />
+			<ProjectForm onAddProject={handleAddProject} />
 			<ProjectList
 				projects={projects}
 				onEdit={handleEditProject}

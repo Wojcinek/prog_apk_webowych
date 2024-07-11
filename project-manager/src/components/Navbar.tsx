@@ -2,15 +2,10 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 const Navbar = () => {
-	const [nav, setNav] = useState(false)
 	const navigate = useNavigate()
 
-	const handleNav = () => {
-		setNav(!nav)
-	}
-
 	const handleStoriesClick = () => {
-		const savedProject = localStorage.getItem('selectedProject')
+		const savedProject = localStorage.getItem('activeProject')
 		if (savedProject) {
 			const project = JSON.parse(savedProject)
 			navigate(`/stories/${project.id}`)
