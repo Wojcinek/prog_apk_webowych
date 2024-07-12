@@ -34,7 +34,7 @@ label {
 }
 
 :root {
-	--bg-color: #f9fafb;
+	--bg-color: #d5e6f7;
 	--text-color: #1f2937;
 	--border-color: #d1d5db;
 	--input-bg-color: #f9fafb;
@@ -45,7 +45,7 @@ label {
 }
 
 .dark {
-	--bg-color: #111827;
+	--bg-color: #131722;
 	--text-color: #f9fafb;
 	--border-color: #374151;
 	--input-bg-color: #1f2937;

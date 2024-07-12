@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 
-interface LoginFormProps{
+interface LoginFormProps {
 	onLogin: () => void
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({onLogin}) => {
+const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
 	const [login, setLogin] = useState('')
 	const [password, setPassword] = useState('')
 	const [message, setMessage] = useState('')
@@ -18,29 +18,26 @@ const LoginForm: React.FC<LoginFormProps> = ({onLogin}) => {
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({ login, password }),
-			});
-			const data = await response.json();
+			})
+			const data = await response.json()
 			if (response.ok) {
-				localStorage.setItem('token', data.token);
-				localStorage.setItem('refreshToken', data.refreshToken);
-				setMessage('Login successful');
+				localStorage.setItem('token', data.token)
+				localStorage.setItem('refreshToken', data.refreshToken)
+				setMessage('Login successful')
 				onLogin()
-	  
 			} else {
-				setMessage('Login failed: ' + data.message);
-				console.log(data);
+				setMessage('Login failed: ' + data.message)
+				console.log(data)
 			}
 		} catch (error) {
-			console.log(error);
-			setMessage('Login failed:alalaal ');
-	  
+			console.log(error)
+			setMessage('Login failed:alalaal ')
 		}
-	
 	}
 
 	return (
 		<section className='bg-gray-50 dark:bg-gray-900'>
-			<div className='flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0'>
+			<div className='flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 '>
 				<h1 className='text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white p-6 space-y-4 md:space-y-6 sm:p-8'>
 					Project Manager
 				</h1>
