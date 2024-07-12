@@ -22,16 +22,16 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSave, storyId }) => {
 	useEffect(() => {
 		const fetchUsers = async () => {
 			try {
-			  const allUsers = await UserService.getAllUsers(); 
-			  const nonAdminUsers = allUsers.filter(user => user.role !== 'admin'); 
-			  setUsers(nonAdminUsers);
+				const allUsers = await UserService.getAllUsers()
+				const nonAdminUsers = allUsers.filter((user) => user.role !== 'admin')
+				setUsers(nonAdminUsers)
 			} catch (error) {
-			  console.error('Error fetching users:', error);
+				console.error('Error fetching users:', error)
 			}
-		  };
-	  
-		  fetchUsers();
-		}, []);
+		}
+
+		fetchUsers()
+	}, [])
 
 	useEffect(() => {
 		if (assignedUser && status === 'todo') {
@@ -44,7 +44,18 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSave, storyId }) => {
 		const createdAt = new Date().toISOString()
 		const startDate = new Date().toISOString()
 		const endDate = new Date().toISOString()
-		const newTask: Task = {
+		const newTask: Task = task ? {
+			...task,
+			name,
+			description,
+			priority,
+			estimatedTime,
+			status,
+			createdAt,
+			startDate,
+			endDate,
+			assignedUser,
+		}:{
 			id: uuidv4(),
 			name,
 			description,
@@ -59,12 +70,14 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSave, storyId }) => {
 		}
 		try {
 			await onSave(newTask)
+			if(!task){
 			setName('')
 			setDescription('')
 			setPriority('low')
 			setEstimatedTime(0)
 			setStatus('todo')
 			setAssignedUser(undefined)
+		}
 		} catch (error) {
 			console.error('error addding task:', error)
 			console.log(newTask)
@@ -73,7 +86,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSave, storyId }) => {
 
 	return (
 		<form onSubmit={handleSubmit} className='max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md dark:bg-gray-800'>
-			<div className='mb-4'>
+			<div className='mb-4 rounded-lg'>
 				<label htmlFor='name' className='block text-gray-700 dark:text-gray-300'>
 					Name
 				</label>
@@ -86,7 +99,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSave, storyId }) => {
 					className='mt-2 p-2 w-full border rounded-lg dark:bg-gray-700 dark:text-white'
 				/>
 			</div>
-			<div className='mb-4'>
+			<div className='mb-4 rounded-lg'>
 				<label htmlFor='description' className='block text-gray-700 dark:text-gray-300'>
 					Description
 				</label>
@@ -99,7 +112,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSave, storyId }) => {
 					className='mt-2 p-2 w-full border rounded-lg dark:bg-gray-700 dark:text-white'
 				/>
 			</div>
-			<div className='mb-4'>
+			<div className='mb-4 rounded-lg'>
 				<label htmlFor='priority' className='block text-gray-700 dark:text-gray-300'>
 					Priority
 				</label>
@@ -113,7 +126,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSave, storyId }) => {
 					<option value='high'>High</option>
 				</select>
 			</div>
-			<div className='mb-4'>
+			<div className='mb-4 rounded-lg'>
 				<label htmlFor='estimatedTime' className='block text-gray-700 dark:text-gray-300'>
 					Estimated Time (hours)
 				</label>
@@ -125,7 +138,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSave, storyId }) => {
 					className='mt-2 p-2 w-full border rounded-lg dark:bg-gray-700 dark:text-white'
 				/>
 			</div>
-			<div className='mb-4'>
+			<div className='mb-4 rounded-lg'>
 				<label htmlFor='status' className='block text-gray-700 dark:text-gray-300'>
 					Status
 				</label>
@@ -139,7 +152,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSave, storyId }) => {
 					<option value='done'>Done</option>
 				</select>
 			</div>
-			<div className='mb-4'>
+			<div className='mb-4 rounded-lg'>
 				<label htmlFor='assignedUser' className='block text-gray-700 dark:text-gray-300'>
 					Assign User
 				</label>
@@ -157,7 +170,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSave, storyId }) => {
 				</select>
 			</div>
 			<button type='submit' className='w-full p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700'>
-				Save
+				{task ? 'Save' : "Add"}
 			</button>
 		</form>
 	)

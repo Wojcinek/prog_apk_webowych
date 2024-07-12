@@ -53,7 +53,7 @@ const StoryForm: React.FC<StoryFormProps> = ({ story, onSave, projectId, }) => {
 
     return (
         <form onSubmit={handleSubmit} className="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md dark:bg-gray-800">
-            <div className="mb-4">
+            <div className="mb-4 rounded-lg">
                 <label htmlFor="name" className="block text-gray-700 dark:text-gray-300">
                     Name
                 </label>
@@ -66,7 +66,7 @@ const StoryForm: React.FC<StoryFormProps> = ({ story, onSave, projectId, }) => {
                     className="mt-2 p-2 w-full border rounded-lg dark:bg-gray-700 dark:text-white"
                 />
             </div>
-            <div className="mb-4">
+            <div className="mb-4 rounded-lg">
                 <label htmlFor="description" className="block text-gray-700 dark:text-gray-300">
                     Description
                 </label>
@@ -79,7 +79,7 @@ const StoryForm: React.FC<StoryFormProps> = ({ story, onSave, projectId, }) => {
                     className="mt-2 p-2 w-full border rounded-lg dark:bg-gray-700 dark:text-white"
                 />
             </div>
-            <div className="mb-4">
+            <div className="mb-4 rounded-lg">
                 <label htmlFor="priority" className="block text-gray-700 dark:text-gray-300">
                     Priority
                 </label>
@@ -93,7 +93,7 @@ const StoryForm: React.FC<StoryFormProps> = ({ story, onSave, projectId, }) => {
                     <option value="high">High</option>
                 </select>
             </div>
-            <div className="mb-4">
+            <div className="mb-4 rounded-lg">
                 <label htmlFor="status" className="block text-gray-700 dark:text-gray-300">
                     Status
                 </label>
