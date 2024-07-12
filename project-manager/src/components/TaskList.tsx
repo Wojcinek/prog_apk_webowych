@@ -55,6 +55,7 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onEdit, onDelete, onUpdate, 
 							<p className='text-gray-600 dark:text-gray-400'>Priority: {task.priority}</p>
 							<p className='text-gray-600 dark:text-gray-400'>Estimated Time: {task.estimatedTime} hours</p>
 							<p className='text-gray-600 dark:text-gray-400'>Status: {task.status}</p>
+							<p className='text-gray-600 dark:text-gray-400'>Created at: {task.createdAt}</p>
 							<p className='text-gray-600 dark:text-gray-400'>
 								Assigned User: {task.assignedUser ? users[task.assignedUser] || 'Unassigned' : 'Unassigned'}
 							</p>

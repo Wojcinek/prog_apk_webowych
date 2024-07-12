@@ -44,43 +44,44 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSave, storyId }) => {
 		const createdAt = new Date().toISOString()
 		const startDate = new Date().toISOString()
 		const endDate = new Date().toISOString()
-		const newTask: Task = task ? {
-			...task,
-			name,
-			description,
-			priority,
-			estimatedTime,
-			status,
-			createdAt,
-			startDate,
-			endDate,
-			assignedUser,
-		}:{
-			id: uuidv4(),
-			name,
-			description,
-			priority,
-			storyId,
-			estimatedTime,
-			status,
-			createdAt,
-			startDate,
-			endDate,
-			assignedUser,
-		}
+		const newTask: Task = task
+			? {
+					...task,
+					name,
+					description,
+					priority,
+					estimatedTime,
+					status,
+					createdAt,
+					startDate,
+					endDate,
+					assignedUser,
+			  }
+			: {
+					id: uuidv4(),
+					name,
+					description,
+					priority,
+					storyId,
+					estimatedTime,
+					status,
+					createdAt,
+					startDate,
+					endDate,
+					assignedUser,
+			  }
 		try {
 			await onSave(newTask)
-			if(!task){
-			setName('')
-			setDescription('')
-			setPriority('low')
-			setEstimatedTime(0)
-			setStatus('todo')
-			setAssignedUser(undefined)
-		}
+			if (!task) {
+				setName('')
+				setDescription('')
+				setPriority('low')
+				setEstimatedTime(0)
+				setStatus('todo')
+				setAssignedUser(undefined)
+			}
 		} catch (error) {
 			console.error('error addding task:', error)
-			console.log(newTask)
 		}
 	}
 
@@ -170,7 +171,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSave, storyId }) => {
 				</select>
 			</div>
 			<button type='submit' className='w-full p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700'>
-				{task ? 'Save' : "Add"}
+				{task ? 'Save' : 'Add'}
 			</button>
 		</form>
 	)
