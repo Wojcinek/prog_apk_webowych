@@ -1,4 +1,3 @@
-import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 const Navbar = () => {
@@ -14,15 +13,6 @@ const Navbar = () => {
 		}
 	}
 
-	const handleTasksClick = () => {
-		const savedStory = localStorage.getItem('selectedStory')
-		if (savedStory) {
-			const story = JSON.parse(savedStory)
-			navigate(`/tasks/${story.id}`)
-		} else {
-			navigate('/projects')
-		}
-	}
 
 	return (
 		<nav className='bg-gray-50 dark:bg-gray-900'>

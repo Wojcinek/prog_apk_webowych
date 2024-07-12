@@ -39,7 +39,6 @@ class TaskService {
 }
 
 export const addTask = async (task: Task): Promise<Task> => {
-	console.log(task)
 	const { data, error } = await supabase.from('Task').insert([task]).single()
 
 	if (error) {

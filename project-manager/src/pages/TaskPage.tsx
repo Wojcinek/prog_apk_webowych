@@ -37,14 +37,20 @@ const TaskPage: React.FC = () => {
 	const handleDeleteTask = async (id: string) => {
 		await TaskService.deleteTask(id)
 		if (storyId) {
-			const stories = await TaskService.getTaskByStoryId(storyId)
+			const tasks = await TaskService.getTaskByStoryId(storyId!)
 			setTasks(tasks)
 		}
 	}
 
-	const handleUpdateTask = (task: Task) => {
-		// TaskService.updateTask(task)
-		// setTasks(TaskService.getAllTasks().filter((t) => t.storyId === storyId))
+	const handleUpdateTask = async (task: Task) => {
+		try {
+			await TaskService.updateTask(task)
+			const tasks = await TaskService.getTaskByStoryId(storyId!)
+			setTasks(tasks)
+			setCurrentTask(undefined)
+		} catch (error) {
+			console.error('Error updating story:', error)
+		}
 	}
 
 	const handleAssignUser = (taskId: string, userId: string) => {

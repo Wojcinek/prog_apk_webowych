@@ -22,7 +22,7 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onEdit, onDelete, onUpdate, 
 				const allUsers = await UserService.getAllUsers()
 				const userMap: { [key: string]: string } = {}
 				allUsers.forEach((user) => {
-					userMap[user.id] = `${user.firstName} ${user.lastName}` // Adjust based on user object structure
+					userMap[user.id] = `${user.firstName} ${user.lastName}`
 				})
 				setUsers(userMap)
 			} catch (error) {
@@ -49,7 +49,7 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onEdit, onDelete, onUpdate, 
 			) : (
 				<ul className='space-y-2'>
 					{tasks.map((task) => (
-						<li key={task.id} className='p-4 border rounded-lg shadow-md bg-white dark:bg-gray-800'>
+						<li key={task.id} className='p-4 border rounded-lg shadow-md bg-white dark:bg-gray-800 '>
 							<h4 className='text-lg font-semibold text-gray-900 dark:text-gray-300'>{task.name}</h4>
 							<p className='text-gray-600 dark:text-gray-400'>{task.description}</p>
 							<p className='text-gray-600 dark:text-gray-400'>Priority: {task.priority}</p>
