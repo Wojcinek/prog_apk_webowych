@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Task } from '../models/Task'
 import TaskForm from './TaskForm'
+import UserService from '../services/UserService'
 
 interface TaskListProps {
 	tasks: Task[]
@@ -13,6 +14,24 @@ interface TaskListProps {
 
 const TaskList: React.FC<TaskListProps> = ({ tasks, onEdit, onDelete, onUpdate, onAssignUser, storyId }) => {
 	const [editingTask, setEditingTask] = React.useState<Task | null>(null)
+	const [users, setUsers] = useState<{ [key: string]: string }>({})
+
+	useEffect(() => {
+		const fetchUsers = async () => {
+			try {
+				const allUsers = await UserService.getAllUsers()
+				const userMap: { [key: string]: string } = {}
+				allUsers.forEach((user) => {
+					userMap[user.id] = `${user.firstName} ${user.lastName}` // Adjust based on user object structure
+				})
+				setUsers(userMap)
+			} catch (error) {
+				console.error('Error fetching users:', error)
+			}
+		}
+
+		fetchUsers()
+	}, [])
 
 	const handleEdit = (task: Task) => {
 		setEditingTask(task)
@@ -36,7 +55,9 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onEdit, onDelete, onUpdate, 
 							<p className='text-gray-600 dark:text-gray-400'>Priority: {task.priority}</p>
 							<p className='text-gray-600 dark:text-gray-400'>Estimated Time: {task.estimatedTime} hours</p>
 							<p className='text-gray-600 dark:text-gray-400'>Status: {task.status}</p>
-							<p className='text-gray-600 dark:text-gray-400'>Assigned User: {task.assignedUser}</p>
+							<p className='text-gray-600 dark:text-gray-400'>
+								Assigned User: {task.assignedUser ? users[task.assignedUser] || 'Unassigned' : 'Unassigned'}
+							</p>
 							<div className='flex justify-between mt-4 bg-white dark:bg-gray-800'>
 								<button
 									onClick={() => handleEdit(task)}

@@ -21,12 +21,17 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSave, storyId }) => {
 
 	useEffect(() => {
 		const fetchUsers = async () => {
-			const allUsers = UserService.getAllUsers()
-			const filteredUsers = allUsers.filter((user) => user.role !== 'admin')
-			setUsers(filteredUsers)
-		}
-		fetchUsers()
-	}, [])
+			try {
+			  const allUsers = await UserService.getAllUsers(); 
+			  const nonAdminUsers = allUsers.filter(user => user.role !== 'admin'); 
+			  setUsers(nonAdminUsers);
+			} catch (error) {
+			  console.error('Error fetching users:', error);
+			}
+		  };
+	  
+		  fetchUsers();
+		}, []);
 
 	useEffect(() => {
 		if (assignedUser && status === 'todo') {

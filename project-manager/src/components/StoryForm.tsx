@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Story } from '../models/Story'
 import { v4 as uuidv4 } from 'uuid'
+import { jwtDecode } from 'jwt-decode'
 
 interface StoryFormProps {
 	story?: Story
@@ -25,6 +26,13 @@ const StoryForm: React.FC<StoryFormProps> = ({ story, onSave, projectId }) => {
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()
+		const token = localStorage.getItem('token')
+		if (!token) {
+			console.error('token not found')
+			return
+		}
+		const decodedToken: { id: string } = jwtDecode(token)
+		const ownerId = decodedToken.id
 		const createdAt = new Date().toISOString()
 		const newStory: Story = { id: uuidv4(), name, description, priority, projectId, status, createdAt, ownerId }
 		try {
