@@ -1,24 +1,42 @@
 import React, { useState } from 'react'
 import supabase from '../lib/supabase'
 
-const LoginForm: React.FC = ({}) => {
+interface LoginFormProps{
+	onLogin: () => void
+}
+
+const LoginForm: React.FC<LoginFormProps> = ({onLogin}) => {
 	const [login, setLogin] = useState('')
 	const [password, setPassword] = useState('')
 	const [message, setMessage] = useState('')
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()
-
-		const { data, error } = await supabase.auth.signInWithPassword({
-			email: login,
-			password: password,
-		})
-
-		if (error) {
-			setMessage('Login failed: ' + error)
-		} else {
-			setMessage('Login successfull')
+		try {
+			const response = await fetch('http://localhost:3000/login', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ login, password }),
+			});
+			const data = await response.json();
+			if (response.ok) {
+				localStorage.setItem('token', data.token);
+				localStorage.setItem('refreshToken', data.refreshToken);
+				setMessage('Login successful');
+				onLogin()
+	  
+			} else {
+				setMessage('Login failed: ' + data.message);
+				console.log(data);
+			}
+		} catch (error) {
+			console.log(error);
+			setMessage('Login failed:alalaal ');
+	  
 		}
+	
 	}
 
 	return (

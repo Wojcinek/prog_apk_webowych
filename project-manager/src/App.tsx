@@ -10,7 +10,7 @@ import { Session } from '@supabase/supabase-js'
 import supabase from './lib/supabase'
 
 const App: React.FC = () => {
-	const [session, setSession] = useState<Session | null>(null)
+	const [isLogged, setisLogged] = useState(false)
 	const [darkMode, setDarkMode] = useState(false)
 
 	useEffect(() => {
@@ -26,25 +26,22 @@ const App: React.FC = () => {
 	}
 
 	useEffect(() => {
-		supabase.auth.getSession().then(({ data: { session } }) => {
-			setSession(session)
-		})
-
-		const {
-			data: { subscription },
-		} = supabase.auth.onAuthStateChange((_event, session) => {
-			setSession(session)
-		})
-
-		return () => subscription.unsubscribe()
+		const check = localStorage.getItem("token")
+		if(check){
+			setisLogged(true)
+		}else{
+			setisLogged(false)
+		}
 	}, [])
 
-	if (!session) {
-		return <LoginForm />
+	if (!isLogged) {
+		return <LoginForm onLogin={()=> setisLogged(true)}/>
 	}
 
 	async function signOut() {
-		const { error } = await supabase.auth.signOut()
+		localStorage.removeItem('token')
+		localStorage.removeItem("refreshToken")
+		setisLogged(false)
 	}
 
 	return (
@@ -63,7 +60,7 @@ const App: React.FC = () => {
 				Logout
 			</button>
 			<button
-				className='absolute top-0 left-0 m-2 bg-neutral-900 dark:bg-white rounded-full text-white dark:text-black font-semibold border border-gray-200 dark:border-purple-400'
+				className='absolute top-0 left-0 m-2 bg-neutral-900 dark:bg-white rounded-full text-white dark:text-black font-semibold border border-gray-200 dark:border-gray-800'
 				onClick={toggleDarkMode}>
 				{darkMode ? '☀️' : '🌙'}
 			</button>

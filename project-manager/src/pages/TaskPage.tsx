@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import TaskForm from '../components/TaskForm'
 import TaskTable from '../components/TaskTable'
 import { Task } from '../models/Task'
-import TaskService from '../services/TaskService'
+import TaskService, { addTask } from '../services/TaskService'
 
 const TaskPage: React.FC = () => {
 	const { storyId } = useParams<{ storyId: string }>()
@@ -20,17 +20,14 @@ const TaskPage: React.FC = () => {
 		fetchTasks()
 	}, [storyId])
 
-	const handleSaveTask = async (task: Task) => {
-		if (task.id === '') {
-			await TaskService.saveTask(task)
-		} else {
-			await TaskService.updateTask(task)
-		}
+	const handleAddTask = async (newTask: Task) => {
 		if (storyId) {
+			const addedTask = await addTask(newTask)
 			const tasks = await TaskService.getTaskByStoryId(storyId)
 			setTasks(tasks)
+		} else {
+			console.error('Error adding task:')
 		}
-		setCurrentTask(undefined)
 	}
 
 	const handleEditTask = (task: Task) => {
@@ -58,7 +55,7 @@ const TaskPage: React.FC = () => {
 	return (
 		<div className='p-4'>
 			<h1 className='text-2xl font-bold text-gray-700 dark:text-gray-300 mb-4'>Tasks</h1>
-			<TaskForm task={currentTask} onSave={handleSaveTask} storyId={storyId!} />
+			<TaskForm task={currentTask} onSave={handleAddTask} storyId={storyId!} />
 			<TaskTable
 				tasks={tasks}
 				onEdit={handleEditTask}

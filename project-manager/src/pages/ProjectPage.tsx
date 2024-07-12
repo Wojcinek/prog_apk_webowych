@@ -46,7 +46,7 @@ const ProjectPage: React.FC = () => {
 
 	return (
 		<div>
-			<h1>Projects</h1>
+			<h1 className='text-2xl font-bold text-gray-700 dark:text-gray-300 mb-4'>Projects</h1>
 			<ProjectForm onAddProject={handleAddProject} />
 			<ProjectList
 				projects={projects}

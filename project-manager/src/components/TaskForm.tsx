@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Task } from '../models/Task'
 import UserService from '../services/UserService'
 import { User } from '../models/User'
+import { v4 as uuidv4 } from 'uuid'
 
 interface TaskFormProps {
 	task?: Task
@@ -33,35 +34,36 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSave, storyId }) => {
 		}
 	}, [assignedUser])
 
-	const handleSubmit = (e: React.FormEvent) => {
+	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()
-
-		if (assignedUser && status === 'doing') {
-			setStatus('done')
-		}
-
-		const updatedTask: Task = {
-			id: task ? task.id : '',
+		const createdAt = new Date().toISOString()
+		const startDate = new Date().toISOString()
+		const endDate = new Date().toISOString()
+		const newTask: Task = {
+			id: uuidv4(),
 			name,
 			description,
 			priority,
 			storyId,
 			estimatedTime,
 			status,
-			createdAt: task ? task.createdAt : '',
-			startDate: task ? task.startDate : undefined,
-			endDate: task ? task.endDate : undefined,
+			createdAt,
+			startDate,
+			endDate,
 			assignedUser,
 		}
-
-		onSave(updatedTask)
-
-		setName('')
-		setDescription('')
-		setPriority('low')
-		setEstimatedTime(0)
-		setStatus('todo')
-		setAssignedUser(undefined)
+		try {
+			await onSave(newTask)
+			setName('')
+			setDescription('')
+			setPriority('low')
+			setEstimatedTime(0)
+			setStatus('todo')
+			setAssignedUser(undefined)
+		} catch (error) {
+			console.error('error addding task:', error)
+			console.log(newTask)
+		}
 	}
 
 	return (

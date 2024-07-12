@@ -13,12 +13,19 @@ class ProjectUserService {
 	}
 
 	static async deleteProject(id: string): Promise<void> {
-		try {
-			const { data, error } = await supabase.from('Project').delete().eq('id', id)
+		const relatedTables = ['Project', 'Story', 'Task']
 
-			if (error) {
-				throw error
+		try {
+			for (const table of relatedTables) {
+				const { error: relatedError } = await supabase.from('Task').delete().eq('storyId', id)
+				if (relatedError) throw relatedError
 			}
+			// for (const table of relatedTables) {
+			// 	const { error: relatedError } = await supabase.from('Story').delete().eq('projectId', id)
+			// 	if (relatedError) throw relatedError
+			// }
+
+			const { data, error } = await supabase.from('Project').delete().eq('id', id).single()
 
 			console.log('Project deleted:', data)
 		} catch (error: unknown) {

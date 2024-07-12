@@ -40,7 +40,7 @@ export const addStory = async (story: Story): Promise<Story> => {
 	const { data, error } = await supabase.from('Story').insert([story]).single()
 
 	if (error) {
-		console.error('Error adding project:', error)
+		console.error('Error adding story:', error)
 		throw error
 	}
 

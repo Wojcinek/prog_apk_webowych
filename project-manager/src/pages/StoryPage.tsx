@@ -4,6 +4,7 @@ import StoryForm from '../components/StoryForm'
 import StoryList from '../components/StoryList'
 import { Story } from '../models/Story'
 import StoryService, { addStory } from '../services/StoryService'
+import ActiveStoryService from '../services/ActiveStoryService'
 
 const StoryPage: React.FC = () => {
 	const { projectId } = useParams<{ projectId: string }>()
@@ -39,8 +40,7 @@ const StoryPage: React.FC = () => {
 			const addedStory = await addStory(newStory)
 			const stories = await StoryService.getStoriesByProjectId(projectId)
 			setStories(stories)
-		}
-		{
+		} else {
 			console.error('Error adding story:')
 		}
 	}
@@ -58,7 +58,7 @@ const StoryPage: React.FC = () => {
 	}
 
 	const handleSelectStory = (story: Story) => {
-		localStorage.setItem('selectedStory', JSON.stringify(story))
+		ActiveStoryService.setActiveStory(story)
 		navigate(`/tasks/${story.id}`)
 	}
 

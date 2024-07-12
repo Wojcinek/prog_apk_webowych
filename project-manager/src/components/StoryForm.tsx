@@ -26,7 +26,6 @@ const StoryForm: React.FC<StoryFormProps> = ({ story, onSave, projectId }) => {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()
 		const createdAt = new Date().toISOString()
-		const ownerId = uuidv4()
 		const newStory: Story = { id: uuidv4(), name, description, priority, projectId, status, createdAt, ownerId }
 		try {
 			await onSave(newStory)
@@ -115,7 +114,7 @@ const StoryForm: React.FC<StoryFormProps> = ({ story, onSave, projectId }) => {
 				</select>
 			</div>
 			<button type='submit' className='w-full p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700 '>
-				Save
+				Add
 			</button>
 		</form>
 	)
